@@ -35,9 +35,9 @@ async function getAnalyticsData(organizationId: string) {
 
   const stats = {
     sent: messages.length,
-    delivered: messages.filter((m) => m.status === "DELIVERED" || m.status === "READ").length,
-    read: messages.filter((m) => m.status === "READ").length,
-    failed: messages.filter((m) => m.status === "FAILED").length,
+    delivered: messages.filter((m: { status: string }) => m.status === "DELIVERED" || m.status === "READ").length,
+    read: messages.filter((m: { status: string }) => m.status === "READ").length,
+    failed: messages.filter((m: { status: string }) => m.status === "FAILED").length,
   }
 
   return { stats, broadcasts }
