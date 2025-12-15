@@ -183,7 +183,7 @@ export default function TeamPage() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={roleColors[member.role]}>
+                        <Badge variant={roleColors[member.role as keyof typeof roleColors] || "outline"}>
                           {member.role}
                         </Badge>
                       </TableCell>
