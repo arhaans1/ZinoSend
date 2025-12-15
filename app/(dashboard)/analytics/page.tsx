@@ -13,6 +13,18 @@ import {
 import { Send, CheckCircle2, Eye, XCircle } from "lucide-react"
 import { formatDate } from "@/lib/utils"
 
+type BroadcastWithTemplate = {
+  id: string
+  name: string
+  template: { name: string }
+  totalRecipients: number
+  sentCount: number
+  deliveredCount: number
+  readCount: number
+  failedCount: number
+  createdAt: Date
+}
+
 async function getAnalyticsData(organizationId: string) {
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
 
@@ -124,7 +136,7 @@ export default async function AnalyticsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {broadcasts.map((broadcast) => {
+              {broadcasts.map((broadcast: BroadcastWithTemplate) => {
                 const deliveryPct =
                   broadcast.totalRecipients > 0
                     ? Math.round((broadcast.deliveredCount / broadcast.totalRecipients) * 100)
