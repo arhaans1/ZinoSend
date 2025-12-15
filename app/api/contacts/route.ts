@@ -100,7 +100,7 @@ export async function POST(request: Request) {
         phone,
         name,
         email,
-        tags: tags || [],
+        tags: JSON.stringify(tags || []),
         optedIn,
         optedInAt: optedIn ? new Date() : null,
         source: "MANUAL",

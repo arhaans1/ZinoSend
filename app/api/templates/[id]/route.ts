@@ -90,7 +90,7 @@ export async function PUT(
       if (headerContent !== undefined) updateData.headerContent = headerContent
       if (templateBody !== undefined) updateData.body = templateBody
       if (footer !== undefined) updateData.footer = footer
-      if (buttons !== undefined) updateData.buttons = buttons
+      if (buttons !== undefined) updateData.buttons = JSON.stringify(buttons)
     }
 
     const template = await prisma.template.update({

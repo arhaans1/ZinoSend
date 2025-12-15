@@ -63,7 +63,7 @@ export async function POST(request: Request) {
           phone: c.phone,
           name: c.name || null,
           email: c.email,
-          tags,
+          tags: JSON.stringify(tags),
           source: "IMPORT",
           optedIn: true,
           optedInAt: new Date(),

@@ -74,8 +74,8 @@ export async function PUT(
     const updateData: any = {}
     if (name !== undefined) updateData.name = name
     if (email !== undefined) updateData.email = email
-    if (tags !== undefined) updateData.tags = tags
-    if (attributes !== undefined) updateData.attributes = attributes
+    if (tags !== undefined) updateData.tags = JSON.stringify(tags)
+    if (attributes !== undefined) updateData.attributes = JSON.stringify(attributes)
     if (optedIn !== undefined) {
       updateData.optedIn = optedIn
       if (optedIn && !existing.optedIn) {

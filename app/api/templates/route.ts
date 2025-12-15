@@ -91,7 +91,7 @@ export async function POST(request: Request) {
         headerContent,
         body: templateBody,
         footer,
-        buttons: buttons || undefined,
+        buttons: buttons ? JSON.stringify(buttons) : undefined,
         status: "DRAFT",
       },
     })

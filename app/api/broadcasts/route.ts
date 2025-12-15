@@ -79,15 +79,24 @@ export async function POST(request: Request) {
     } else if (recipientType === "selected" && selectedContacts) {
       recipientIds = selectedContacts
     } else if (recipientType === "tags" && tags) {
-      const contacts = await prisma.contact.findMany({
+      // Tags is stored as JSON string, so we need to filter in JS
+      const allContacts = await prisma.contact.findMany({
         where: {
           organizationId: user.organizationId,
           optedIn: true,
-          tags: { hasSome: tags },
         },
-        select: { id: true },
+        select: { id: true, tags: true },
       })
-      recipientIds = contacts.map((c) => c.id)
+      // Filter contacts that have any of the selected tags
+      const filteredContacts = allContacts.filter((c) => {
+        try {
+          const contactTags = JSON.parse(c.tags) as string[]
+          return contactTags.some((t: string) => tags.includes(t))
+        } catch {
+          return false
+        }
+      })
+      recipientIds = filteredContacts.map((c) => c.id)
     }
 
     if (recipientIds.length === 0) {
@@ -105,7 +114,7 @@ export async function POST(request: Request) {
           templateId,
           createdById: user.id,
           name,
-          variableMapping: variableMapping || {},
+          variableMapping: JSON.stringify(variableMapping || {}),
           status: scheduledAt ? "SCHEDULED" : "PROCESSING",
           scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
           totalRecipients: recipientIds.length,
