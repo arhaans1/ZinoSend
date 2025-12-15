@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     const parsed = inviteTeamMemberSchema.safeParse(body)
     if (!parsed.success) {
       return NextResponse.json(
-        { success: false, error: { message: parsed.error.errors[0].message } },
+        { success: false, error: { message: parsed.error.issues[0].message } },
         { status: 400 }
       )
     }
