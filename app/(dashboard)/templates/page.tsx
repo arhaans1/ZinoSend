@@ -36,7 +36,7 @@ export default function TemplatesPage() {
 
   const templates: Template[] = data?.data || []
   const filteredTemplates = templates.filter(
-    (t) =>
+    (t: Template) =>
       t.name.toLowerCase().includes(search.toLowerCase()) ||
       t.body.toLowerCase().includes(search.toLowerCase())
   )
@@ -103,7 +103,7 @@ export default function TemplatesPage() {
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredTemplates.map((template) => (
+          {filteredTemplates.map((template: Template) => (
             <TemplateCard
               key={template.id}
               template={template}

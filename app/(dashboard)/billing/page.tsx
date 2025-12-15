@@ -221,7 +221,7 @@ export default function BillingPage() {
 
           <div className="space-y-4">
             <div className="grid grid-cols-4 gap-2">
-              {presetAmounts.map((amount) => (
+              {presetAmounts.map((amount: number) => (
                 <Button
                   key={amount}
                   variant={topUpAmount === String(amount) ? "default" : "outline"}

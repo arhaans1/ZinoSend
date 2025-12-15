@@ -30,12 +30,12 @@ export default function ChatPage() {
 
   const conversations: ConversationWithRelations[] = data?.data || []
   const filteredConversations = conversations.filter(
-    (c) =>
+    (c: ConversationWithRelations) =>
       c.contact?.name?.toLowerCase().includes(search.toLowerCase()) ||
       c.contact?.phone.includes(search)
   )
 
-  const selectedConversation = conversations.find((c) => c.id === selectedId)
+  const selectedConversation = conversations.find((c: ConversationWithRelations) => c.id === selectedId)
 
   return (
     <div className="h-[calc(100vh-8rem)]">
@@ -60,10 +60,10 @@ export default function ChatPage() {
                 No conversations yet
               </div>
             ) : (
-              filteredConversations.map((conv) => {
+              filteredConversations.map((conv: ConversationWithRelations) => {
                 const initials = conv.contact?.name
                   ?.split(" ")
-                  .map((n) => n[0])
+                  .map((n: string) => n[0])
                   .join("")
                   .toUpperCase()
                   .slice(0, 2) || "?"

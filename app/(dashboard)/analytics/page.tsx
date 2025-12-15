@@ -10,8 +10,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Send, CheckCircle2, Eye, XCircle } from "lucide-react"
+import { Send, CheckCircle2, Eye, XCircle, LucideIcon } from "lucide-react"
 import { formatDate } from "@/lib/utils"
+
+type AnalyticsStatCard = {
+  title: string
+  value: string
+  icon: LucideIcon
+  description: string
+}
 
 type BroadcastWithTemplate = {
   id: string
@@ -98,7 +105,7 @@ export default async function AnalyticsPage() {
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {statCards.map((stat) => {
+        {statCards.map((stat: AnalyticsStatCard) => {
           const Icon = stat.icon
           return (
             <Card key={stat.title}>

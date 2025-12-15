@@ -77,28 +77,28 @@ export default function BroadcastPage() {
 
   const templates: Template[] = templatesData?.data || []
   const contacts: Contact[] = contactsData?.data || []
-  const selectedTemplate = templates.find((t) => t.id === selectedTemplateId)
+  const selectedTemplate = templates.find((t: { id: string }) => t.id === selectedTemplateId)
 
   // Extract variables from template
   const variables: string[] = []
   if (selectedTemplate) {
     const matches = selectedTemplate.body.match(/\{\{(\d+)\}\}/g) || []
-    matches.forEach((match) => {
+    matches.forEach((match: string) => {
       const num = match.replace(/[{}]/g, "")
       if (!variables.includes(num)) variables.push(num)
     })
   }
 
   // Get unique tags from contacts
-  const allTags = Array.from(new Set(contacts.flatMap((c) => c.tags)))
+  const allTags = Array.from(new Set(contacts.flatMap((c: { tags: string[] }) => c.tags)))
 
   // Calculate recipients count
   const getRecipientCount = () => {
     if (recipientType === "all") return contacts.length
     if (recipientType === "selected") return selectedContacts.length
     if (recipientType === "tags") {
-      return contacts.filter((c) =>
-        c.tags.some((t) => selectedTags.includes(t))
+      return contacts.filter((c: { tags: string[] }) =>
+        c.tags.some((t: string) => selectedTags.includes(t))
       ).length
     }
     return 0
@@ -212,15 +212,15 @@ export default function BroadcastPage() {
                 <div className="space-y-2">
                   <Label>Select Tags</Label>
                   <div className="flex flex-wrap gap-2">
-                    {allTags.map((tag) => (
+                    {allTags.map((tag: string) => (
                       <Badge
                         key={tag}
                         variant={selectedTags.includes(tag) ? "default" : "outline"}
                         className="cursor-pointer"
                         onClick={() =>
-                          setSelectedTags((prev) =>
+                          setSelectedTags((prev: string[]) =>
                             prev.includes(tag)
-                              ? prev.filter((t) => t !== tag)
+                              ? prev.filter((t: string) => t !== tag)
                               : [...prev, tag]
                           )
                         }
@@ -235,7 +235,7 @@ export default function BroadcastPage() {
               {recipientType === "selected" && (
                 <div className="space-y-2 max-h-60 overflow-y-auto">
                   <Label>Select Contacts</Label>
-                  {contacts.map((contact) => (
+                  {contacts.map((contact: Contact) => (
                     <div
                       key={contact.id}
                       className="flex items-center space-x-2 p-2 hover:bg-gray-50 rounded"
@@ -243,10 +243,10 @@ export default function BroadcastPage() {
                       <Checkbox
                         checked={selectedContacts.includes(contact.id)}
                         onCheckedChange={(checked) =>
-                          setSelectedContacts((prev) =>
+                          setSelectedContacts((prev: string[]) =>
                             checked
                               ? [...prev, contact.id]
-                              : prev.filter((id) => id !== contact.id)
+                              : prev.filter((id: string) => id !== contact.id)
                           )
                         }
                       />
@@ -270,7 +270,7 @@ export default function BroadcastPage() {
             <div className="space-y-4">
               <Label>Select Template *</Label>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {templates.map((template) => (
+                {templates.map((template: Template) => (
                   <div
                     key={template.id}
                     className={`p-4 border rounded-lg cursor-pointer transition-colors ${

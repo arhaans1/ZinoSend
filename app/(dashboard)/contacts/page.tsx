@@ -83,12 +83,12 @@ export default function ContactsPage() {
   const pagination = data?.pagination || { page: 1, totalPages: 1, total: 0 }
 
   const handleSelectAll = (checked: boolean) => {
-    setSelectedIds(checked ? contacts.map((c) => c.id) : [])
+    setSelectedIds(checked ? contacts.map((c: Contact) => c.id) : [])
   }
 
   const handleSelectOne = (id: string, checked: boolean) => {
-    setSelectedIds((prev) =>
-      checked ? [...prev, id] : prev.filter((i) => i !== id)
+    setSelectedIds((prev: string[]) =>
+      checked ? [...prev, id] : prev.filter((i: string) => i !== id)
     )
   }
 
@@ -198,7 +198,7 @@ export default function ContactsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {contacts.map((contact) => (
+                {contacts.map((contact: Contact) => (
                   <TableRow key={contact.id}>
                     <TableCell>
                       <Checkbox
@@ -215,7 +215,7 @@ export default function ContactsPage() {
                     <TableCell>{contact.email || "-"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1 flex-wrap">
-                        {contact.tags.slice(0, 3).map((tag) => (
+                        {contact.tags.slice(0, 3).map((tag: string) => (
                           <Badge key={tag} variant="secondary">
                             {tag}
                           </Badge>

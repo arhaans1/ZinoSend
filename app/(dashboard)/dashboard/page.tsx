@@ -20,8 +20,26 @@ import {
   Plus,
   Send,
   FileText,
+  LucideIcon,
 } from "lucide-react"
 import Link from "next/link"
+
+type StatCard = {
+  title: string
+  value: string
+  icon: LucideIcon
+  description: string
+  trend: string
+}
+
+type RecentBroadcast = {
+  id: string
+  name: string
+  template: { name: string }
+  totalRecipients: number
+  deliveredCount: number
+  status: string
+}
 
 async function getDashboardData(organizationId: string) {
   const [organization, contactsCount, messagesThisMonth, recentBroadcasts] =
@@ -146,7 +164,7 @@ export default async function DashboardPage() {
 
       {/* Stat Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {statCards.map((stat) => {
+        {statCards.map((stat: StatCard) => {
           const Icon = stat.icon
           return (
             <Card key={stat.title}>
@@ -211,7 +229,7 @@ export default async function DashboardPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.recentBroadcasts.map((broadcast) => (
+                {data.recentBroadcasts.map((broadcast: RecentBroadcast) => (
                   <TableRow key={broadcast.id}>
                     <TableCell className="font-medium">{broadcast.name}</TableCell>
                     <TableCell>{broadcast.template.name}</TableCell>
