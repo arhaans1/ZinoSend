@@ -79,6 +79,15 @@ export default function BroadcastPage() {
   const contacts: Contact[] = contactsData?.data || []
   const selectedTemplate = templates.find((t: { id: string }) => t.id === selectedTemplateId)
 
+  // Helper to parse tags JSON string
+  const parseTags = (tags: string): string[] => {
+    try {
+      return JSON.parse(tags) || []
+    } catch {
+      return []
+    }
+  }
+
   // Extract variables from template
   const variables: string[] = []
   if (selectedTemplate) {
@@ -90,15 +99,15 @@ export default function BroadcastPage() {
   }
 
   // Get unique tags from contacts
-  const allTags = Array.from(new Set(contacts.flatMap((c: { tags: string[] }) => c.tags)))
+  const allTags = Array.from(new Set(contacts.flatMap((c: Contact) => parseTags(c.tags))))
 
   // Calculate recipients count
   const getRecipientCount = () => {
     if (recipientType === "all") return contacts.length
     if (recipientType === "selected") return selectedContacts.length
     if (recipientType === "tags") {
-      return contacts.filter((c: { tags: string[] }) =>
-        c.tags.some((t: string) => selectedTags.includes(t))
+      return contacts.filter((c: Contact) =>
+        parseTags(c.tags).some((t: string) => selectedTags.includes(t))
       ).length
     }
     return 0

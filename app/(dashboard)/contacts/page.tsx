@@ -32,6 +32,15 @@ import { useToast } from "@/hooks/use-toast"
 import { formatPhone, formatDate } from "@/lib/utils"
 import type { Contact } from "@/types"
 
+// Helper to parse tags JSON string
+const parseTags = (tags: string): string[] => {
+  try {
+    return JSON.parse(tags) || []
+  } catch {
+    return []
+  }
+}
+
 async function fetchContacts(page: number, search: string) {
   const params = new URLSearchParams({
     page: page.toString(),
@@ -215,14 +224,14 @@ export default function ContactsPage() {
                     <TableCell>{contact.email || "-"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1 flex-wrap">
-                        {contact.tags.slice(0, 3).map((tag: string) => (
+                        {parseTags(contact.tags).slice(0, 3).map((tag: string) => (
                           <Badge key={tag} variant="secondary">
                             {tag}
                           </Badge>
                         ))}
-                        {contact.tags.length > 3 && (
+                        {parseTags(contact.tags).length > 3 && (
                           <Badge variant="secondary">
-                            +{contact.tags.length - 3}
+                            +{parseTags(contact.tags).length - 3}
                           </Badge>
                         )}
                       </div>
