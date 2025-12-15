@@ -52,9 +52,9 @@ export const contactSchema = z.object({
   phone: phoneSchema,
   name: z.string().optional(),
   email: z.string().email().optional().or(z.literal('')),
-  tags: z.array(z.string()).default([]),
-  attributes: z.record(z.string()).default({}),
-  optedIn: z.boolean().default(true),
+  tags: z.array(z.string()).optional(),
+  attributes: z.record(z.string()).optional(),
+  optedIn: z.boolean().optional(),
 })
 
 export const contactImportSchema = z.object({
