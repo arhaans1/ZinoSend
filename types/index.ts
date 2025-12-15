@@ -7,18 +7,6 @@ import type {
   Message,
   Conversation,
   Transaction,
-  SubscriptionPlan,
-  UserRole,
-  ContactSource,
-  TemplateCategory,
-  TemplateStatus,
-  HeaderType,
-  BroadcastStatus,
-  MessageDirection,
-  MessageType,
-  MessageStatus,
-  ConversationStatus,
-  TransactionType,
 } from '@prisma/client'
 
 // Re-export Prisma types
@@ -31,19 +19,21 @@ export type {
   Message,
   Conversation,
   Transaction,
-  SubscriptionPlan,
-  UserRole,
-  ContactSource,
-  TemplateCategory,
-  TemplateStatus,
-  HeaderType,
-  BroadcastStatus,
-  MessageDirection,
-  MessageType,
-  MessageStatus,
-  ConversationStatus,
-  TransactionType,
 }
+
+// String literal types (previously enums, now stored as strings)
+export type SubscriptionPlan = 'FREE' | 'STARTER' | 'GROWTH' | 'ENTERPRISE'
+export type UserRole = 'OWNER' | 'ADMIN' | 'AGENT'
+export type ContactSource = 'MANUAL' | 'IMPORT' | 'GHL' | 'WHATSAPP' | 'API'
+export type TemplateCategory = 'MARKETING' | 'UTILITY' | 'AUTHENTICATION'
+export type TemplateStatus = 'DRAFT' | 'PENDING' | 'APPROVED' | 'REJECTED'
+export type HeaderType = 'TEXT' | 'IMAGE' | 'VIDEO' | 'DOCUMENT'
+export type BroadcastStatus = 'DRAFT' | 'SCHEDULED' | 'PROCESSING' | 'COMPLETED' | 'CANCELLED' | 'FAILED'
+export type MessageDirection = 'INBOUND' | 'OUTBOUND'
+export type MessageType = 'TEXT' | 'IMAGE' | 'VIDEO' | 'DOCUMENT' | 'AUDIO' | 'STICKER' | 'TEMPLATE' | 'INTERACTIVE'
+export type MessageStatus = 'QUEUED' | 'SENT' | 'DELIVERED' | 'READ' | 'FAILED'
+export type ConversationStatus = 'OPEN' | 'CLOSED' | 'RESOLVED'
+export type TransactionType = 'TOPUP' | 'DEDUCTION' | 'REFUND' | 'SUBSCRIPTION'
 
 // Extended session user type
 export interface SessionUser {
