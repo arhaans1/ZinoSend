@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -21,8 +21,8 @@ model Organization {
   gupshupApiKey     String?  @map("gupshup_api_key")
 
   // Billing
-  walletBalance     Decimal  @default(0) @map("wallet_balance") @db.Decimal(10, 2)
-  subscriptionPlan  SubscriptionPlan @default(FREE) @map("subscription_plan")
+  walletBalance     Decimal  @default(0) @map("wallet_balance")
+  subscriptionPlan  String   @default("FREE") @map("subscription_plan")
   subscriptionEndsAt DateTime? @map("subscription_ends_at")
   razorpayCustomerId String? @map("razorpay_customer_id")
 
@@ -52,13 +52,6 @@ model Organization {
   @@map("organizations")
 }
 
-enum SubscriptionPlan {
-  FREE
-  STARTER
-  GROWTH
-  ENTERPRISE
-}
-
 // Users belong to an organization
 model User {
   id              String   @id @default(cuid())
@@ -69,8 +62,8 @@ model User {
   name            String
   avatarUrl       String?  @map("avatar_url")
 
-  role            UserRole @default(AGENT)
-  permissions     Json     @default("{}")
+  role            String   @default("AGENT")
+  permissions     String   @default("{}")
 
   emailVerified   DateTime? @map("email_verified")
   lastLoginAt     DateTime? @map("last_login_at")
@@ -86,12 +79,6 @@ model User {
   @@map("users")
 }
 
-enum UserRole {
-  OWNER
-  ADMIN
-  AGENT
-}
-
 // WhatsApp contacts
 model Contact {
   id              String   @id @default(cuid())
@@ -101,10 +88,10 @@ model Contact {
   name            String?
   email           String?
 
-  tags            String[] @default([])
-  attributes      Json     @default("{}") // Custom key-value pairs
+  tags            String   @default("[]") // JSON array as string
+  attributes      String   @default("{}") // JSON object as string
 
-  source          ContactSource @default(MANUAL)
+  source          String   @default("MANUAL")
   ghlContactId    String?  @map("ghl_contact_id")
 
   optedIn         Boolean  @default(true) @map("opted_in")
@@ -122,16 +109,7 @@ model Contact {
   broadcastRecipients BroadcastRecipient[]
 
   @@unique([organizationId, phone])
-  @@index([organizationId, tags])
   @@map("contacts")
-}
-
-enum ContactSource {
-  MANUAL
-  IMPORT
-  GHL
-  WHATSAPP
-  API
 }
 
 // WhatsApp message templates
@@ -140,20 +118,20 @@ model Template {
   organizationId  String   @map("organization_id")
 
   name            String   // Internal name
-  templateName    String   @map("template_name") // Name submitted to Meta (lowercase, underscores)
+  templateName    String   @map("template_name") // Name submitted to Meta
 
-  category        TemplateCategory
+  category        String   // MARKETING, UTILITY, AUTHENTICATION
   language        String   @default("en")
 
   // Template components
-  headerType      HeaderType? @map("header_type")
-  headerContent   String?  @map("header_content") // Text or media URL
-  body            String   // Message body with {{1}}, {{2}} variables
+  headerType      String?  @map("header_type") // TEXT, IMAGE, VIDEO, DOCUMENT
+  headerContent   String?  @map("header_content")
+  body            String
   footer          String?
-  buttons         Json?    // Array of button objects
+  buttons         String?  // JSON array
 
   // Meta approval status
-  status          TemplateStatus @default(DRAFT)
+  status          String   @default("DRAFT") // DRAFT, PENDING, APPROVED, REJECTED
   metaTemplateId  String?  @map("meta_template_id")
   rejectionReason String?  @map("rejection_reason")
 
@@ -172,26 +150,6 @@ model Template {
   @@map("templates")
 }
 
-enum TemplateCategory {
-  MARKETING
-  UTILITY
-  AUTHENTICATION
-}
-
-enum HeaderType {
-  TEXT
-  IMAGE
-  VIDEO
-  DOCUMENT
-}
-
-enum TemplateStatus {
-  DRAFT
-  PENDING
-  APPROVED
-  REJECTED
-}
-
 // Broadcast campaigns
 model Broadcast {
   id              String   @id @default(cuid())
@@ -201,16 +159,15 @@ model Broadcast {
 
   name            String
 
-  // Variable mapping: { "1": "name", "2": "static:Hello" }
-  variableMapping Json     @default("{}") @map("variable_mapping")
+  variableMapping String   @default("{}") @map("variable_mapping")
 
   // Scheduling
-  status          BroadcastStatus @default(DRAFT)
+  status          String   @default("DRAFT") // DRAFT, SCHEDULED, PROCESSING, COMPLETED, CANCELLED, FAILED
   scheduledAt     DateTime? @map("scheduled_at")
   startedAt       DateTime? @map("started_at")
   completedAt     DateTime? @map("completed_at")
 
-  // Stats (denormalized for quick access)
+  // Stats
   totalRecipients Int      @default(0) @map("total_recipients")
   sentCount       Int      @default(0) @map("sent_count")
   deliveredCount  Int      @default(0) @map("delivered_count")
@@ -218,7 +175,7 @@ model Broadcast {
   failedCount     Int      @default(0) @map("failed_count")
 
   // Cost tracking
-  totalCost       Decimal  @default(0) @map("total_cost") @db.Decimal(10, 2)
+  totalCost       Decimal  @default(0) @map("total_cost")
 
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
@@ -233,22 +190,13 @@ model Broadcast {
   @@map("broadcasts")
 }
 
-enum BroadcastStatus {
-  DRAFT
-  SCHEDULED
-  PROCESSING
-  COMPLETED
-  CANCELLED
-  FAILED
-}
-
 // Many-to-many for broadcast recipients
 model BroadcastRecipient {
   id              String   @id @default(cuid())
   broadcastId     String   @map("broadcast_id")
   contactId       String   @map("contact_id")
 
-  status          MessageStatus @default(QUEUED)
+  status          String   @default("QUEUED") // QUEUED, SENT, DELIVERED, READ, FAILED
 
   // Relations
   broadcast       Broadcast @relation(fields: [broadcastId], references: [id], onDelete: Cascade)
@@ -267,19 +215,18 @@ model Message {
   broadcastId     String?  @map("broadcast_id")
   templateId      String?  @map("template_id")
 
-  direction       MessageDirection
-  type            MessageType
+  direction       String   // INBOUND, OUTBOUND
+  type            String   // TEXT, IMAGE, VIDEO, DOCUMENT, AUDIO, STICKER, TEMPLATE, INTERACTIVE
 
-  // Content varies by type
-  content         Json     // { text: "", mediaUrl: "", caption: "", etc. }
+  content         String   // JSON object
 
   // Status tracking
-  status          MessageStatus @default(QUEUED)
+  status          String   @default("QUEUED") // QUEUED, SENT, DELIVERED, READ, FAILED
   gupshupMsgId    String?  @map("gupshup_msg_id")
   errorMessage    String?  @map("error_message")
 
-  // Cost (for outbound)
-  cost            Decimal  @default(0) @db.Decimal(10, 4)
+  // Cost
+  cost            Decimal  @default(0)
 
   // Timestamps
   sentAt          DateTime? @map("sent_at")
@@ -302,30 +249,6 @@ model Message {
   @@map("messages")
 }
 
-enum MessageDirection {
-  INBOUND
-  OUTBOUND
-}
-
-enum MessageType {
-  TEXT
-  IMAGE
-  VIDEO
-  DOCUMENT
-  AUDIO
-  STICKER
-  TEMPLATE
-  INTERACTIVE
-}
-
-enum MessageStatus {
-  QUEUED
-  SENT
-  DELIVERED
-  READ
-  FAILED
-}
-
 // Conversations (thread with a contact)
 model Conversation {
   id              String   @id @default(cuid())
@@ -339,7 +262,7 @@ model Conversation {
   assignedToId    String?  @map("assigned_to_id")
 
   // Status
-  status          ConversationStatus @default(OPEN)
+  status          String   @default("OPEN") // OPEN, CLOSED, RESOLVED
   unreadCount     Int      @default(0) @map("unread_count")
 
   lastMessageAt   DateTime? @map("last_message_at")
@@ -359,20 +282,14 @@ model Conversation {
   @@map("conversations")
 }
 
-enum ConversationStatus {
-  OPEN
-  CLOSED
-  RESOLVED
-}
-
 // Billing transactions
 model Transaction {
   id              String   @id @default(cuid())
   organizationId  String   @map("organization_id")
 
-  type            TransactionType
-  amount          Decimal  @db.Decimal(10, 2)
-  balanceAfter    Decimal  @map("balance_after") @db.Decimal(10, 2)
+  type            String   // TOPUP, DEDUCTION, REFUND, SUBSCRIPTION
+  amount          Decimal
+  balanceAfter    Decimal  @map("balance_after")
 
   description     String
 
@@ -391,11 +308,4 @@ model Transaction {
 
   @@index([organizationId, createdAt])
   @@map("transactions")
-}
-
-enum TransactionType {
-  TOPUP
-  DEDUCTION
-  REFUND
-  SUBSCRIPTION
 }
