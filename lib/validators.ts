@@ -121,15 +121,15 @@ export const inviteTeamMemberSchema = z.object({
   email: emailSchema,
   role: z.enum(['ADMIN', 'AGENT']),
   permissions: z.object({
-    viewContacts: z.boolean().default(true),
-    manageContacts: z.boolean().default(false),
-    viewTemplates: z.boolean().default(true),
-    manageTemplates: z.boolean().default(false),
-    createBroadcasts: z.boolean().default(false),
-    viewAnalytics: z.boolean().default(false),
-    manageTeam: z.boolean().default(false),
-    manageBilling: z.boolean().default(false),
-  }).default({}),
+    viewContacts: z.boolean().optional(),
+    manageContacts: z.boolean().optional(),
+    viewTemplates: z.boolean().optional(),
+    manageTemplates: z.boolean().optional(),
+    createBroadcasts: z.boolean().optional(),
+    viewAnalytics: z.boolean().optional(),
+    manageTeam: z.boolean().optional(),
+    manageBilling: z.boolean().optional(),
+  }).optional(),
 })
 
 // Billing schemas
