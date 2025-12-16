@@ -66,10 +66,10 @@ export function TemplateCard({ template, onEdit }: TemplateCardProps) {
             <div className="space-y-1">
               <CardTitle className="text-base">{template.name}</CardTitle>
               <div className="flex gap-2">
-                <Badge variant={statusColors[template.status]}>
+                <Badge variant={statusColors[template.status as keyof typeof statusColors]}>
                   {template.status}
                 </Badge>
-                <Badge variant="outline">{categoryLabels[template.category]}</Badge>
+                <Badge variant="outline">{categoryLabels[template.category as keyof typeof categoryLabels]}</Badge>
               </div>
             </div>
             <DropdownMenu>
