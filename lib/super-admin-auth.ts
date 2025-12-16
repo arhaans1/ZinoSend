@@ -13,10 +13,11 @@ export interface SuperAdminPayload {
   id: string
   email: string
   name: string
+  [key: string]: unknown // Index signature for JWT compatibility
 }
 
 export async function createSuperAdminToken(payload: SuperAdminPayload): Promise<string> {
-  return new SignJWT(payload)
+  return new SignJWT({ ...payload })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('24h')
