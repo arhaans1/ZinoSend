@@ -53,7 +53,7 @@ export const contactSchema = z.object({
   name: z.string().optional(),
   email: z.string().email().optional().or(z.literal('')),
   tags: z.array(z.string()).optional(),
-  attributes: z.record(z.string()).optional(),
+  attributes: z.record(z.string(), z.string()).optional(),
   optedIn: z.boolean().optional(),
 })
 
@@ -94,7 +94,7 @@ export const broadcastSchema = z.object({
   recipientType: z.enum(['all', 'tags', 'selected', 'csv']),
   selectedContacts: z.array(z.string()).optional(),
   tags: z.array(z.string()).optional(),
-  variableMapping: z.record(z.string()).optional(),
+  variableMapping: z.record(z.string(), z.string()).optional(),
   mediaUrl: z.string().url().optional().or(z.literal('')),
   scheduledAt: z.date().optional(),
 })
