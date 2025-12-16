@@ -51,7 +51,7 @@ export async function POST(request: Request) {
       name,
       templateName,
       category,
-      language,
+      language = 'en',
       headerType,
       headerContent,
       body: templateBody,
