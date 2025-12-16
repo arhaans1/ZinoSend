@@ -74,7 +74,7 @@ export const templateSchema = z.object({
     .min(1, 'Template name for Meta is required')
     .regex(/^[a-z][a-z0-9_]*$/, 'Must be lowercase with underscores, starting with a letter'),
   category: z.enum(['MARKETING', 'UTILITY', 'AUTHENTICATION']),
-  language: z.string().default('en'),
+  language: z.string().optional(),
   headerType: z.enum(['TEXT', 'IMAGE', 'VIDEO', 'DOCUMENT']).optional(),
   headerContent: z.string().optional(),
   body: z.string().min(1, 'Message body is required'),
@@ -94,7 +94,7 @@ export const broadcastSchema = z.object({
   recipientType: z.enum(['all', 'tags', 'selected', 'csv']),
   selectedContacts: z.array(z.string()).optional(),
   tags: z.array(z.string()).optional(),
-  variableMapping: z.record(z.string()).default({}),
+  variableMapping: z.record(z.string()).optional(),
   mediaUrl: z.string().url().optional().or(z.literal('')),
   scheduledAt: z.date().optional(),
 })
