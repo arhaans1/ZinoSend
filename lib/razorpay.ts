@@ -35,7 +35,7 @@ export async function createTopUpOrder(params: CreateOrderParams): Promise<Razor
 
   return {
     orderId: order.id,
-    amount: order.amount / 100,
+    amount: Number(order.amount) / 100,
     currency: order.currency,
     key: process.env.RAZORPAY_KEY_ID!,
   }
