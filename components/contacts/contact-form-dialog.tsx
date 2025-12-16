@@ -79,11 +79,17 @@ export function ContactFormDialog({
 
   useEffect(() => {
     if (contact) {
+      let parsedTags: string[] = []
+      try {
+        parsedTags = typeof contact.tags === 'string' ? JSON.parse(contact.tags) : (contact.tags || [])
+      } catch {
+        parsedTags = []
+      }
       reset({
         phone: contact.phone,
         name: contact.name || "",
         email: contact.email || "",
-        tags: contact.tags,
+        tags: parsedTags,
         optedIn: contact.optedIn,
       })
     } else {
