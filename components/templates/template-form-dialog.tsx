@@ -96,9 +96,9 @@ export function TemplateFormDialog({
       reset({
         name: template.name,
         templateName: template.templateName,
-        category: template.category,
+        category: template.category as "MARKETING" | "UTILITY" | "AUTHENTICATION",
         language: template.language,
-        headerType: template.headerType || undefined,
+        headerType: (template.headerType as "TEXT" | "IMAGE" | "VIDEO" | "DOCUMENT") || undefined,
         headerContent: template.headerContent || "",
         body: template.body,
         footer: template.footer || "",
