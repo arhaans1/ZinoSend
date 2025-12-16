@@ -77,12 +77,13 @@ export async function createSubscription(params: {
   customerId: string
   totalCount?: number
 }) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return razorpay.subscriptions.create({
     plan_id: params.planId,
     customer_id: params.customerId,
     total_count: params.totalCount || 12,
     customer_notify: 1,
-  })
+  } as any)
 }
 
 // Cancel subscription
